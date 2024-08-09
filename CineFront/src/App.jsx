@@ -7,7 +7,7 @@ function App() {
       id: 1,
       title: "John Wick",
       director: "director",
-      imageUrl: "https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/media/image/2017/04/concurso-john-wick-pacto-sangre.jpg?tf=3840x",
+      imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrlMhuTYAKZHxZXA4OzjqcKaopJEjTOzLxnQ&s",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. In, quod dolor? Obcaecati vero fuga nisi quos nam? Commodi magnam obcaecati animi deserunt blanditiis tempore ab sint ipsum veritatis. Aliquam, debitis.",
     },
@@ -15,7 +15,7 @@ function App() {
       id: 2,
       title: "Deadpool",
       director: "director",
-      imageUrl: "https://i.blogs.es/b0699f/deadppool-3/650_1200.jpeg",
+      imageUrl: "https://pics.filmaffinity.com/Deadpool-834516798-mmed.jpg",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. In, quod dolor? Obcaecati vero fuga nisi quos nam? Commodi magnam obcaecati animi deserunt blanditiis tempore ab sint ipsum veritatis. Aliquam, debitis.",
     },
@@ -23,7 +23,7 @@ function App() {
       id: 3,
       title: "Spiderman",
       director: "director",
-      imageUrl: "https://s0.smartresize.com/wallpaper/328/237/HD-wallpaper-spider-man-spider-man-far-from-home-michelle-mj-jones-mysterio-marvel-comics-nick-fury-peter-parker-tom-holland.jpg",
+      imageUrl: "https://hips.hearstapps.com/hmg-prod/images/spiderman-homecoming-poster-1551691492.jpg",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. In, quod dolor? Obcaecati vero fuga nisi quos nam? Commodi magnam obcaecati animi deserunt blanditiis tempore ab sint ipsum veritatis. Aliquam, debitis.",
     },
