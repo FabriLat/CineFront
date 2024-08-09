@@ -1,20 +1,20 @@
-import MovieItem from "../movieItem/MovieItem";
+import React from 'react';
+import MovieItem from '../movieItem/MovieItem';
 
-const Movies = ({movies}) => {
+const Movies = ({ movies }) => {
+  return (
+    <div className="d-flex justify-content-center flex-wrap">
+      {movies.map((movie) => (
+        <MovieItem
+          key={movie.id}
+          title={movie.title}
+          director={movie.director}
+          description={movie.description}
+          imageUrl={movie.imageUrl}
+        />
+      ))}
+    </div>
+  );
+};
 
-    const mappedMovies = movies.map((m)=>{
-        return(
-            <MovieItem 
-            key={m.id}
-            title={m.title}
-            director={m.director}
-            description={m.description}
-            imageUrl={m.imageUrl}
-            />
-        ) 
-    })
-    return(
-        mappedMovies
-    )
-}
 export default Movies;
