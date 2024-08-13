@@ -1,5 +1,7 @@
 import "./App.css";
 import Movies from "./components/movies/Movies";
+import NavBar from './components/navBar/NavBar';
+import Footer from "./components/footer/Footer";
 
 function App() {
   const initialMovies = [
@@ -31,7 +33,10 @@ function App() {
 
   return (
     <>
+
+      <NavBar />
       <Movies movies={initialMovies} />
+      <Footer/>
     </>
   );
 }
