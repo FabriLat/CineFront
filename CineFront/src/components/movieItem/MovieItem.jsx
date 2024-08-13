@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card } from 'react-bootstrap';
+import FunctionForm from '../functionForm/FunctionForm';
 
 const MovieItem = ({ id, title, director, description, imageUrl }) => {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const functions = [
+    { id: 1, name: 'Función 1' },
+    { id: 2, name: 'Función 2' },
+    { id: 3, name: 'Función 3' },
+  ];
+
   return (
     <Card 
       className="mx-3 mb-4" 
@@ -24,6 +36,7 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
         <Card.Subtitle className="mb-2" style={{ color: "white" }}>{director}</Card.Subtitle>
         <p style={{ color: "white", textAlign: "left" }}>{description}</p>
         <Button 
+          onClick={handleShowModal}
           style={{ 
             backgroundColor: "#262140",  
             border: "none",
@@ -38,6 +51,8 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
           Ver
         </Button>
       </Card.Body>
+
+      <FunctionForm show={showModal} handleClose={handleCloseModal} functions={functions} />
     </Card>
   );
 };
