@@ -7,6 +7,7 @@ const Movies = ({ movies }) => {
       {movies.map((movie) => (
         <MovieItem
           key={movie.id}
+          id={movie.id}
           title={movie.title}
           director={movie.director}
           description={movie.description}
