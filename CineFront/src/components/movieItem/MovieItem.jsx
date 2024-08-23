@@ -4,15 +4,32 @@ import FunctionForm from '../functionForm/FunctionForm';
 
 const MovieItem = ({ id, title, director, description, imageUrl }) => {
   const [showModal, setShowModal] = useState(false);
+  const [movieShows, setMovieShows] = useState([]);
 
-  const handleShowModal = () => setShowModal(true);
+  const fetchShows = async () => {
+    console.log("Renderizando en MocieItem");
+    console.log(`el id es: ${id}`)
+    try {
+      const response = await fetch(`https://localhost:7183/api/Show/GetShowsByMovieId?movieId=${id}`);
+      const showsData = await response.json();
+      setMovieShows(showsData);
+      console.log(showsData);
+    } catch (error) {
+      console.log("Error al solicitar las funciones a la base de datos:", error);
+    }
+  };
+
+  const handleShowModal = () => {
+    setShowModal(true);
+    fetchShows();
+  };
   const handleCloseModal = () => setShowModal(false);
 
-  const functions = [
+  /*const functions = [
     { id: 1, name: 'Función 1' },
     { id: 2, name: 'Función 2' },
     { id: 3, name: 'Función 3' },
-  ];
+  ];*/
 
   return (
     <Card 
@@ -52,7 +69,7 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
         </Button>
       </Card.Body>
 
-      <FunctionForm show={showModal} handleClose={handleCloseModal} functions={functions} />
+      <FunctionForm show={showModal} handleClose={handleCloseModal} functions={movieShows} />
     </Card>
   );
 };
