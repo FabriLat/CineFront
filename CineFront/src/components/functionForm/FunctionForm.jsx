@@ -29,7 +29,7 @@ const FunctionForm = ({ show, handleClose, functions }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} style={{width: "1500px"}}>
+    <Modal show={show} onHide={handleClose} className="modal-lg">
       <Modal.Header closeButton>
         <Modal.Title>Funciones Disponibles</Modal.Title>
       </Modal.Header>
@@ -40,7 +40,7 @@ const FunctionForm = ({ show, handleClose, functions }) => {
         <ListGroup>
           {functions.map((func) => (
             <ListGroup.Item key={func.id} className="d-flex justify-content-between align-items-center">
-              {`Fecha: ${func.date} - ${func.startTime} - ${func.price}`}
+              {`Fecha: ${func.date}, hora: ${func.startTime}, precio: ${func.price}`}
               <div className="d-flex justify-content-between align-items-center">
                 <Button style={editButtonStyle} className="me-2">
                   Editar
