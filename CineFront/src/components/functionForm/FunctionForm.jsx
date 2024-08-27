@@ -1,15 +1,19 @@
-import React from 'react';
-import { Button, Modal, ListGroup } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Modal, ListGroup, Form } from 'react-bootstrap';
 
 const FunctionForm = ({ show, handleClose, functions }) => {
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newFunction, setNewFunction] = useState({ date: '', startTime: '', price: '' });
+  const [editingFunction, setEditingFunction] = useState(null);
+  const [editingDetails, setEditingDetails] = useState({ date: '', startTime: '', price: '' });
+
   const commonButtonStyle = {
     border: "none",
     color: "white",
     fontWeight: "bold",
     fontSize: "1.2rem",
     borderRadius: "0",
-    textTransform: "uppercase"
-    
+    textTransform: "uppercase",
   };
 
   const addButtonStyle = {
@@ -20,40 +24,189 @@ const FunctionForm = ({ show, handleClose, functions }) => {
 
   const editButtonStyle = {
     ...commonButtonStyle,
-    backgroundColor: "green" 
+    backgroundColor: "green"
   };
 
   const deleteButtonStyle = {
     ...commonButtonStyle,
-    backgroundColor: "red" // 
+    backgroundColor: "red"
+  };
+
+  const labelStyle = {
+    color: "#E0E0E0", 
+    marginBottom: "0.5rem"
+  };
+
+  const inputStyle = {
+    backgroundColor: "#333",
+    color: "white", 
+    border: "1px solid #555",
+    marginBottom: "1rem"
+  };
+
+  const modalContentStyle = {
+    backgroundColor: "#1c1c1c",
+    color: "white"
+  };
+
+  const handleAddFunction = () => {
+    console.log("Nueva función agregada:", newFunction);
+    setShowAddForm(false);
+  };
+
+  const handleEditFunction = () => {
+    console.log("Función editada:", editingDetails);
+    setEditingFunction(null);
+  };
+
+  const handleEditClick = (func) => {
+    setEditingFunction(func.id);
+    setEditingDetails({ date: func.date, startTime: func.startTime, price: func.price });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingFunction(null);
+    setEditingDetails({ date: '', startTime: '', price: '' });
   };
 
   return (
-    <Modal show={show} onHide={handleClose} className="modal-lg">
-      <Modal.Header closeButton>
-        <Modal.Title>Funciones Disponibles</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Button style={addButtonStyle} className="mb-3">
-          Agregar Nueva Función
-        </Button>
-        <ListGroup>
-          {functions.map((func) => (
-            <ListGroup.Item key={func.id} className="d-flex justify-content-between align-items-center">
-              {`Fecha: ${func.date}, hora: ${func.startTime}, precio: ${func.price}`}
-              <div className="d-flex justify-content-between align-items-center">
-                <Button style={editButtonStyle} className="me-2">
-                  Editar
-                </Button>
-                <Button style={deleteButtonStyle}>
-                  Eliminar
-                </Button>
-              </div>
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Modal.Body>
-    </Modal>
+    <>
+      <Modal show={show} onHide={handleClose} className="modal-lg">
+        <Modal.Header closeButton style={modalContentStyle}>
+          <Modal.Title>Funciones Disponibles</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={modalContentStyle}>
+          <Button
+            style={addButtonStyle}
+            className="mb-3"
+            onClick={() => setShowAddForm(true)}
+          >
+            Agregar Nueva Función
+          </Button>
+          <ListGroup>
+            {functions.map((func) => (
+              <ListGroup.Item key={func.id} className="mb-3" style={{ backgroundColor: "#2c2c2c", color: "#E0E0E0" }}>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div>
+                    {`Fecha: ${func.date}, hora: ${func.startTime}, precio: ${func.price}`}
+                  </div>
+                  <div className="d-flex align-items-center">
+                    {editingFunction === func.id ? (
+                      <>
+                        <Button
+                          style={commonButtonStyle}
+                          className="me-2"
+                          onClick={handleEditFunction}
+                        >
+                          Guardar Cambios
+                        </Button>
+                        <Button
+                          style={commonButtonStyle}
+                          onClick={handleCancelEdit}
+                        >
+                          Cancelar
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button 
+                          style={editButtonStyle} 
+                          className="me-2"
+                          onClick={() => handleEditClick(func)}
+                        >
+                          Editar
+                        </Button>
+                        <Button style={deleteButtonStyle}>
+                          Eliminar
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+                {editingFunction === func.id && (
+                  <div className="mt-3">
+                    <Form>
+                      <Form.Group controlId="editFunctionDate">
+                        <Form.Label style={labelStyle}>Fecha</Form.Label>
+                        <Form.Control
+                          type="date"
+                          value={editingDetails.date}
+                          onChange={(e) => setEditingDetails({ ...editingDetails, date: e.target.value })}
+                          style={inputStyle}
+                        />
+                      </Form.Group>
+                      <Form.Group controlId="editFunctionTime">
+                        <Form.Label style={labelStyle}>Hora</Form.Label>
+                        <Form.Control
+                          type="time"
+                          value={editingDetails.startTime}
+                          onChange={(e) => setEditingDetails({ ...editingDetails, startTime: e.target.value })}
+                          style={inputStyle}
+                        />
+                      </Form.Group>
+                      <Form.Group controlId="editFunctionPrice">
+                        <Form.Label style={labelStyle}>Precio</Form.Label>
+                        <Form.Control
+                          type="number"
+                          value={editingDetails.price}
+                          onChange={(e) => setEditingDetails({ ...editingDetails, price: e.target.value })}
+                          style={inputStyle}
+                        />
+                      </Form.Group>
+                    </Form>
+                  </div>
+                )}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+      </Modal>
+
+      <Modal show={showAddForm} onHide={() => setShowAddForm(false)} className="modal-lg">
+        <Modal.Header closeButton style={modalContentStyle}>
+          <Modal.Title>Agregar Nueva Función</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={modalContentStyle}>
+          <Form>
+            <Form.Group controlId="functionDate">
+              <Form.Label style={labelStyle}>Fecha</Form.Label>
+              <Form.Control
+                type="date"
+                value={newFunction.date}
+                onChange={(e) => setNewFunction({ ...newFunction, date: e.target.value })}
+                style={inputStyle}
+              />
+            </Form.Group>
+            <Form.Group controlId="functionTime">
+              <Form.Label style={labelStyle}>Hora</Form.Label>
+              <Form.Control
+                type="time"
+                value={newFunction.startTime}
+                onChange={(e) => setNewFunction({ ...newFunction, startTime: e.target.value })}
+                style={inputStyle}
+              />
+            </Form.Group>
+            <Form.Group controlId="functionPrice">
+              <Form.Label style={labelStyle}>Precio</Form.Label>
+              <Form.Control
+                type="number"
+                value={newFunction.price}
+                onChange={(e) => setNewFunction({ ...newFunction, price: e.target.value })}
+                style={inputStyle}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer style={modalContentStyle}>
+          <Button style={commonButtonStyle} onClick={handleAddFunction}>
+            Guardar
+          </Button>
+          <Button style={commonButtonStyle} onClick={() => setShowAddForm(false)}>
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };
 
