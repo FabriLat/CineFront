@@ -78,6 +78,7 @@ const FunctionForm = ({ show, handleClose, functions, movieId, movieTitle }) => 
       })
       .catch((error) => console.log(error))
 
+    setNewFunction({ date: '', startTime: '', price: '', movieId: '' });
     setShowAddForm(false);
     handleClose();
   };
@@ -110,6 +111,7 @@ const FunctionForm = ({ show, handleClose, functions, movieId, movieTitle }) => 
       })
       .catch((error) => console.log(error))
 
+    setEditingDetails({ date: '', startTime: '', price: '' })
     setEditingFunction(null);
     handleClose();
   };
