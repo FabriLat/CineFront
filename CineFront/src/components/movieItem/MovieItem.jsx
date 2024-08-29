@@ -7,10 +7,10 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
   const [movieShows, setMovieShows] = useState([]);
 
   const fetchShows = async () => {
-    console.log("Renderizando en MocieItem");
+    console.log("Renderizando en MovieItem");
     console.log(`el id es: ${id}`)
     try {
-      const response = await fetch(`https://localhost:7183/api/Show/GetShowsByMovieId?movieId=${id}`);
+      const response = await fetch(`https://localhost:7183/api/Show/GetShowsByMovieId/${id}`);
       const showsData = await response.json();
       setMovieShows(showsData);
       console.log(showsData);

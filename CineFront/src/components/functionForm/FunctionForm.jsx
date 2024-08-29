@@ -54,9 +54,36 @@ const FunctionForm = ({ show, handleClose, functions }) => {
     setShowAddForm(false);
   };
 
-  const handleEditFunction = () => {
-    console.log("Función editada:", editingDetails);
+  const handleEditFunction = async (showId) => {
+
+    const subStringArray = editingDetails.date.split("-")
+    //console.log(subStringArray);
+    const editShowArray = {
+      "sartTime": editingDetails.startTime,
+      "date": `${subStringArray[2]}/${subStringArray[1]}/${subStringArray[0]}`,
+      "price": editingDetails.price
+    }
+
+    await fetch(`https://localhost:7183/api/Show/ModifyShow/${showId}`, {
+        method: "PUT",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify(editShowArray)
+    })
+      .then((response) => {
+          if (response.ok) {
+            console.log("Función editada:", editShowArray);
+            alert("Los datos de la función se editaron con éxito");
+          } else {
+              alert("No se ha podido editar los datos correctamente");
+              throw new Error("The response has some errors");
+          }
+      })
+      .catch((error) => console.log(error))
+
     setEditingFunction(null);
+    handleClose();
   };
 
   const handleEditClick = (func) => {
@@ -88,7 +115,7 @@ const FunctionForm = ({ show, handleClose, functions }) => {
               <ListGroup.Item key={func.id} className="mb-3" style={{ backgroundColor: "#2c2c2c", color: "#E0E0E0" }}>
                 <div className="d-flex align-items-center justify-content-between">
                   <div>
-                    {`Fecha: ${func.date}, hora: ${func.startTime}, precio: ${func.price}`}
+                    {`Fecha: ${func.date}, hora: ${func.startTime}, precio: $${func.price}`}
                   </div>
                   <div className="d-flex align-items-center">
                     {editingFunction === func.id ? (
@@ -96,7 +123,7 @@ const FunctionForm = ({ show, handleClose, functions }) => {
                         <Button
                           style={commonButtonStyle}
                           className="me-2"
-                          onClick={handleEditFunction}
+                          onClick={() => handleEditFunction(func.id)}
                         >
                           Guardar Cambios
                         </Button>
