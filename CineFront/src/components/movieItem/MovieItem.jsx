@@ -69,7 +69,7 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
         </Button>
       </Card.Body>
 
-      <FunctionForm show={showModal} handleClose={handleCloseModal} functions={movieShows} />
+      <FunctionForm show={showModal} handleClose={handleCloseModal} functions={movieShows} movieId={id} />
     </Card>
   );
 };

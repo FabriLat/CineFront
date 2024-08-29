@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Modal, ListGroup, Form } from 'react-bootstrap';
 
-const FunctionForm = ({ show, handleClose, functions }) => {
+const FunctionForm = ({ show, handleClose, functions, movieId }) => {
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newFunction, setNewFunction] = useState({ date: '', startTime: '', price: '' });
+  const [newFunction, setNewFunction] = useState({ date: '', startTime: '', price: '', movieId: '' });
   const [editingFunction, setEditingFunction] = useState(null);
   const [editingDetails, setEditingDetails] = useState({ date: '', startTime: '', price: '' });
 
@@ -49,9 +49,37 @@ const FunctionForm = ({ show, handleClose, functions }) => {
     color: "white"
   };
 
-  const handleAddFunction = () => {
-    console.log("Nueva función agregada:", newFunction);
+  const handleAddFunction = async (movieId) => {
+    
+    const subStringArray = newFunction.date.split("-")
+    //console.log(subStringArray);
+    const addShowArray = {
+      "sartTime": newFunction.startTime,
+      "date": `${subStringArray[2]}/${subStringArray[1]}/${subStringArray[0]}`,
+      "price": newFunction.price,
+      "movieId": movieId
+    };
+
+    await fetch("https://localhost:7183/api/Show/AddShow", {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify(addShowArray)
+    })
+      .then((response) => {
+          if (response.ok) {
+            console.log("Función creada:", addShowArray);
+            alert("La función se ha creado con éxito");
+          } else {
+              alert("No se ha podido crear la función");
+              throw new Error("The response has some errors");
+          }
+      })
+      .catch((error) => console.log(error))
+
     setShowAddForm(false);
+    handleClose();
   };
 
   const handleEditFunction = async (showId) => {
@@ -225,7 +253,7 @@ const FunctionForm = ({ show, handleClose, functions }) => {
           </Form>
         </Modal.Body>
         <Modal.Footer style={modalContentStyle}>
-          <Button style={commonButtonStyle} onClick={handleAddFunction}>
+          <Button style={commonButtonStyle} onClick={() => handleAddFunction(movieId)}>
             Guardar
           </Button>
           <Button style={commonButtonStyle} onClick={() => setShowAddForm(false)}>
