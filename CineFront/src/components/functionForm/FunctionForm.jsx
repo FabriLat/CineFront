@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, ListGroup, Form } from 'react-bootstrap';
 
-const FunctionForm = ({ show, handleClose, functions, movieId }) => {
+const FunctionForm = ({ show, handleClose, functions, movieId, movieTitle }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newFunction, setNewFunction] = useState({ date: '', startTime: '', price: '', movieId: '' });
   const [editingFunction, setEditingFunction] = useState(null);
@@ -124,11 +124,33 @@ const FunctionForm = ({ show, handleClose, functions, movieId }) => {
     setEditingDetails({ date: '', startTime: '', price: '' });
   };
 
+  const handleDeleteShow = async (showId) => {
+
+    await fetch(`https://localhost:7183/api/Show/DeleteShow/${showId}`, {
+      method: "DELETE",
+      headers: {
+          "content-type": "application/json"
+      }
+  })
+    .then((response) => {
+        if (response.ok) {
+          console.log("Función eliminada");
+          alert("La función se ha eliminado con éxito");
+        } else {
+            alert("No se ha podido eliminar la función");
+            throw new Error("The response has some errors");
+        }
+    })
+    .catch((error) => console.log(error))
+
+  handleClose();
+  };
+
   return (
     <>
       <Modal show={show} onHide={handleClose} className="modal-lg">
         <Modal.Header closeButton style={modalContentStyle}>
-          <Modal.Title>Funciones Disponibles</Modal.Title>
+          <Modal.Title>{`Funciones Disponibles para ${movieTitle}`}</Modal.Title>
         </Modal.Header>
         <Modal.Body style={modalContentStyle}>
           <Button
@@ -171,7 +193,9 @@ const FunctionForm = ({ show, handleClose, functions, movieId }) => {
                         >
                           Editar
                         </Button>
-                        <Button style={deleteButtonStyle}>
+                        <Button style={deleteButtonStyle}
+                          onClick={() => handleDeleteShow(func.id)}
+                        >
                           Eliminar
                         </Button>
                       </>
