@@ -13,7 +13,6 @@ const FunctionForm = ({
     date: "",
     startTime: "",
     price: "",
-    movieId: "",
   });
   const [editingFunction, setEditingFunction] = useState(null);
   const [editingDetails, setEditingDetails] = useState({
@@ -64,68 +63,87 @@ const FunctionForm = ({
     color: "white",
   };
 
-  const handleAddFunction = async (movieId) => {
-    //const subStringArray = newFunction.date.split("-")
-    var date = new Date(newFunction.date + "T" + newFunction.startTime);
-    var isoDate = date.toISOString();
-    console.log(isoDate);
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const handleAddFunction = async () => {
+    // this combines date and time into one string and convert to UTC
+    const dateTime = new Date(`${newFunction.date}T${newFunction.startTime}Z`);
+    const isoDate = dateTime.toISOString();
+
     const addShowArray = {
       date: isoDate,
       price: newFunction.price,
       movieId: movieId,
     };
 
-    await fetch("https://localhost:7183/api/Show/AddShow", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(addShowArray),
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("Función creada:", addShowArray);
-          alert("La función se ha creado con éxito");
-        } else {
-          alert("No se ha podido crear la función");
-          throw new Error("The response has some errors");
-        }
-      })
-      .catch((error) => console.log(error));
+    try {
+      const response = await fetch("https://localhost:7183/api/Show/AddShow", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addShowArray),
+      });
 
-    setNewFunction({ date: "", startTime: "", price: "", movieId: "" });
+      if (response.ok) {
+        console.log("Función creada:", addShowArray);
+        alert("La función se ha creado con éxito");
+      } else {
+        alert("No se ha podido crear la función");
+        throw new Error("The response has some errors");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    setNewFunction({ date: "", startTime: "", price: "" });
     setShowAddForm(false);
     handleClose();
   };
 
-  const handleEditFunction = async (showId) => {
-    //const subStringArray = editingDetails.date.split("-")
-    //console.log(subStringArray);
-    var date = new Date(editingDetails.date + "T" + editingDetails.startTime);
-    var isoDate = date.toISOString();
+  const handleEditFunction = async () => {
+    const dateTime = new Date(`${editingDetails.date}T${editingDetails.startTime}Z`);
+    const isoDate = dateTime.toISOString();
 
     const editShowArray = {
       date: isoDate,
       price: editingDetails.price,
     };
 
-    await fetch(`https://localhost:7183/api/Show/ModifyShow/${showId}`, {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(editShowArray),
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("Función editada:", editShowArray);
-          alert("Los datos de la función se editaron con éxito");
-        } else {
-          alert("No se ha podido editar los datos correctamente");
-          throw new Error("The response has some errors");
-        }
-      })
-      .catch((error) => console.log(error));
+    try {
+      const response = await fetch(`https://localhost:7183/api/Show/ModifyShow/${editingFunction}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editShowArray),
+      });
+
+      if (response.ok) {
+        console.log("Función editada:", editShowArray);
+        alert("Los datos de la función se editaron con éxito");
+      } else {
+        alert("No se ha podido editar los datos correctamente");
+        throw new Error("The response has some errors");
+      }
+    } catch (error) {
+      console.log(error);
+    }
 
     setEditingDetails({ date: "", startTime: "", price: "" });
     setEditingFunction(null);
@@ -135,8 +153,8 @@ const FunctionForm = ({
   const handleEditClick = (func) => {
     setEditingFunction(func.id);
     setEditingDetails({
-      date: func.date,
-      startTime: func.startTime,
+      date: func.date.slice(0, 10), // YYYY-MM-DD
+      startTime: func.date.slice(11, 16), // HH:MM
       price: func.price,
     });
   };
@@ -147,25 +165,29 @@ const FunctionForm = ({
   };
 
   const handleDeleteShow = async (showId) => {
-    await fetch(`https://localhost:7183/api/Show/DeleteShow/${showId}`, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-      },
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("Función eliminada");
-          alert("La función se ha eliminado con éxito");
-        } else {
-          alert("No se ha podido eliminar la función");
-          throw new Error("The response has some errors");
-        }
-      })
-      .catch((error) => console.log(error));
+    try {
+      const response = await fetch(`https://localhost:7183/api/Show/DeleteShow/${showId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        console.log("Función eliminada");
+        alert("La función se ha eliminado con éxito");
+      } else {
+        alert("No se ha podido eliminar la función");
+        throw new Error("The response has some errors");
+      }
+    } catch (error) {
+      console.log(error);
+    }
 
     handleClose();
   };
+
+  const sortedFunctions = [...functions].sort((a, b) => new Date(a.date) - new Date(b.date));
 
   return (
     <>
@@ -182,7 +204,7 @@ const FunctionForm = ({
             Agregar Nueva Función
           </Button>
           <ListGroup>
-            {functions.map((func) => (
+            {sortedFunctions.map((func) => (
               <ListGroup.Item
                 key={func.id}
                 className="mb-3"
@@ -190,7 +212,7 @@ const FunctionForm = ({
               >
                 <div className="d-flex align-items-center justify-content-between">
                   <div>
-                    {`Fecha: ${func.date}, hora: ${func.startTime}, precio: $${func.price}`}
+                    {`Fecha: ${formatDate(func.date)}, Hora: ${formatTime(func.date)}, Precio: $${func.price}`}
                   </div>
                   <div className="d-flex align-items-center">
                     {editingFunction === func.id ? (
@@ -198,7 +220,7 @@ const FunctionForm = ({
                         <Button
                           style={commonButtonStyle}
                           className="me-2"
-                          onClick={() => handleEditFunction(func.id)}
+                          onClick={handleEditFunction}
                         >
                           Guardar Cambios
                         </Button>
@@ -309,7 +331,10 @@ const FunctionForm = ({
                 type="time"
                 value={newFunction.startTime}
                 onChange={(e) =>
-                  setNewFunction({ ...newFunction, startTime: e.target.value })
+                  setNewFunction({
+                    ...newFunction,
+                    startTime: e.target.value,
+                  })
                 }
                 style={inputStyle}
               />
@@ -320,27 +345,23 @@ const FunctionForm = ({
                 type="number"
                 value={newFunction.price}
                 onChange={(e) =>
-                  setNewFunction({ ...newFunction, price: e.target.value })
+                  setNewFunction({
+                    ...newFunction,
+                    price: e.target.value,
+                  })
                 }
                 style={inputStyle}
               />
             </Form.Group>
+            <Button
+              style={addButtonStyle}
+              className="mt-3"
+              onClick={handleAddFunction}
+            >
+              Agregar Función
+            </Button>
           </Form>
         </Modal.Body>
-        <Modal.Footer style={modalContentStyle}>
-          <Button
-            style={commonButtonStyle}
-            onClick={() => handleAddFunction(movieId)}
-          >
-            Guardar
-          </Button>
-          <Button
-            style={commonButtonStyle}
-            onClick={() => setShowAddForm(false)}
-          >
-            Cancelar
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );
