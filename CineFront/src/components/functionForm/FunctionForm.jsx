@@ -7,6 +7,7 @@ const FunctionForm = ({
   functions,
   movieId,
   movieTitle,
+  directorName
 }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newFunction, setNewFunction] = useState({
@@ -193,7 +194,7 @@ const FunctionForm = ({
     <>
       <Modal show={show} onHide={handleClose} className="modal-lg">
         <Modal.Header closeButton style={modalContentStyle}>
-          <Modal.Title>{`Funciones Disponibles para ${movieTitle}`}</Modal.Title>
+          <Modal.Title>{`Funciones Disponibles para ${movieTitle}, del director ${directorName}`}</Modal.Title>
         </Modal.Header>
         <Modal.Body style={modalContentStyle}>
           <Button
