@@ -9,7 +9,7 @@ const Movies = ({ movies }) => {
           key={movie.id}
           id={movie.id}
           title={movie.title}
-          director={movie.director}
+          director={movie.directorId}
           description={movie.description}
           imageUrl={movie.imageUrl}
         />

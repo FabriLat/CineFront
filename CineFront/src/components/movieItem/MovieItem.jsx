@@ -5,6 +5,7 @@ import FunctionForm from '../functionForm/FunctionForm';
 const MovieItem = ({ id, title, director, description, imageUrl }) => {
   const [showModal, setShowModal] = useState(false);
   const [movieShows, setMovieShows] = useState([]);
+  const [directorName, setDirectorName] = useState("");
 
   const fetchShows = async () => {
     console.log("Renderizando en MovieItem");
@@ -19,8 +20,20 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
     }
   };
 
-  const handleShowModal = () => {
+  const fetchDirector = async () => {
+    try {
+      const response = await fetch(`https://localhost:7183/api/Directors/${director}`);
+      const directorData = await response.json();
+      setDirectorName(directorData.name);
+      console.log(directorData);
+    } catch (error) {
+      console.log("Error al solicitar los datos del director a la base de datos:", error);
+    }
+  };
+
+  const handleShowModal = async () => {
     setShowModal(true);
+    await fetchDirector();
     fetchShows();
   };
   const handleCloseModal = () => setShowModal(false);
@@ -50,7 +63,7 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
       />
       <Card.Body>
         <Card.Title style={{ color: "white" }}>{title}</Card.Title>
-        <Card.Subtitle className="mb-2" style={{ color: "white" }}>{director}</Card.Subtitle>
+        <Card.Subtitle className="mb-2" style={{ color: "white" }}></Card.Subtitle>
         <p style={{ color: "white", textAlign: "left" }}>{description}</p>
         <Button 
           onClick={handleShowModal}
@@ -69,7 +82,7 @@ const MovieItem = ({ id, title, director, description, imageUrl }) => {
         </Button>
       </Card.Body>
 
-      <FunctionForm show={showModal} handleClose={handleCloseModal} functions={movieShows} movieId={id} movieTitle={title}/>
+      <FunctionForm show={showModal} handleClose={handleCloseModal} functions={movieShows} movieId={id} movieTitle={title} directorName={directorName}/>
     </Card>
   );
 };
